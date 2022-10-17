@@ -1,0 +1,14 @@
+name: 'set-version-file'
+description: 'Sets version file in ./internal/version'
+runs:
+  using: "composite"
+  steps:
+    - run: cp internal/version/init.go.tmpl internal/version/init.go
+      shell: bash
+    - run: |
+        echo "GIT_COMMIT_HASH=$(git rev-parse --verify HEAD)" >> $GITHUB_ENV
+        echo "GIT_VERSION_TAG=$(git describe --tags --dirty --abbrev=0 --always)" >> $GITHUB_ENV
+      shell: bash
+    - run: >
+        gofmt -w -r "unknownVersion -> Version{GitCommit: \"${{ env.GIT_COMMIT_HASH }}\", Version: \"${{ env.GIT_VERSION_TAG }}\",}" internal/version/init.go
+      shell: bash

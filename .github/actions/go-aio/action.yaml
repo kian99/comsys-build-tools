@@ -1,0 +1,29 @@
+name: 'go-aio'
+description: 'Setup go with auth and vendor'
+
+inputs:
+  user:
+    description: 'User to authenticate against'
+    required: true
+    default: ''
+  pat:
+    description: 'PAT token to authenticate against'
+    required: true
+    default: ''
+  version:
+    description: 'Go version'
+    required: true
+    default: '1.18'
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-go@v3
+      with:
+        go-version: 1.18
+        architecture: x64
+        cache: true
+    - run: git config --global url.https://${{ inputs.user }}:${{ inputs.pat }}@github.com/.insteadOf https://github.com/
+      shell: bash
+    - run: go mod vendor
+      shell: bash
