@@ -12,15 +12,20 @@ inputs:
     default: ""
   version:
     description: "Go version"
-    required: true
+    required: false
     default: "1.18"
+  version-file:
+    description: "Go version file (go.mod)"
+    required: false
+    default: "go.mod"
 
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-go@v3
+    - uses: actions/setup-go@v5
       with:
         go-version: ${{ inputs.version }}
+        go-version-file: ${{ inputs.version-file }}
         architecture: x64
         cache: true
     - run: git config --global url.https://${{ inputs.user }}:${{ inputs.pat }}@github.com/.insteadOf https://github.com/
