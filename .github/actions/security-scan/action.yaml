@@ -4,10 +4,6 @@ description: "Run Go vulernability scan and Trivy repo scan"
 runs:
   using: "composite"
   steps:
-    - name: Setup Go
-      uses: actions/setup-go@v5
-      with:
-        go-version-file: go.mod
     - name: Go Vulnerability Check
       id: govulncheck
       uses: golang/govulncheck-action@v1
