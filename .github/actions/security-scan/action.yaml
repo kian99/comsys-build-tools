@@ -5,7 +5,7 @@ description: "Run Go vulernability scan and Trivy repo scan"
 inputs:
   github-token:
     description: 'GitHub token'
-    required: true
+    required: false
 
 runs:
   using: "composite"
