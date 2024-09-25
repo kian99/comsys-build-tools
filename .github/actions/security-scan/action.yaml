@@ -7,6 +7,7 @@ runs:
     - name: Go Vulnerability Check
       id: govulncheck
       uses: golang/govulncheck-action@v1
+
     - name: Run Trivy vulnerability scanner in repo mode
       uses: aquasecurity/trivy-action@0.23.0
       with:
@@ -15,3 +16,6 @@ runs:
         format: 'table' 
         severity: 'CRITICAL'
         exit-code: '1'
+      env:
+        # TEMP FIX FOR: https://github.com/aquasecurity/trivy-action/issues/389
+        ACTIONS_RUNTIME_TOKEN: ${{ secrets.GITHUB_TOKEN }}
