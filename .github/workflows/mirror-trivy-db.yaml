@@ -8,6 +8,9 @@ jobs:
     mirror:
         runs-on: ubuntu-latest
         steps:
+
+            -   uses: actions/checkout@v3
+
             -   name: "Install ORAS"
                 uses: oras-project/setup-oras@v1
 
