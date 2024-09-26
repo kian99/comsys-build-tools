@@ -17,5 +17,4 @@ runs:
         severity: 'CRITICAL'
         exit-code: '1'
       env:
-        # TEMP FIX FOR: https://github.com/aquasecurity/trivy-action/issues/389
-        ACTIONS_RUNTIME_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TRIVY_DB_REPOSITORY: ghcr.io/ale8k/comsys-build-tools/trivy-db:2
