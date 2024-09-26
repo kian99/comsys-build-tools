@@ -8,4 +8,10 @@ jobs:
     mirror:
         runs-on: ubuntu-latest
         steps:
-            - uses: oras-project/setup-oras@v1
+            -   name: "Install ORAS"
+                uses: oras-project/setup-oras@v1
+            -   name: "Pull trivy-db"
+                run: oras pull ghcr.io/aquasecurity/trivy-db:2
+            -   name: Setup tmate session
+                uses: mxschmitt/action-tmate@v3
+
