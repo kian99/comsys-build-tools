@@ -18,6 +18,6 @@ jobs:
                 run: |
                     echo "${{ secrets.GITHUB_TOKEN }}" | oras login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            -   name: Setup tmate session
-                uses: mxschmitt/action-tmate@v3
+            -   name: "Mirror trivy db"
+                run: oras cp ghcr.io/aquasecurity/trivy-db:2 ghcr.io/${{ github.repository }}/trivy-db:2
 
