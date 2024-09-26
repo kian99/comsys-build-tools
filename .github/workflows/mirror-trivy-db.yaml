@@ -1,0 +1,11 @@
+name: Mirror Trivy DB
+run-name: ${{ github.actor }} is updating trivy DB mirror
+on:
+    workflow_dispatch:
+    # schedule:
+    #     - cron: '0 */6 * * *' hiii
+jobs:
+    mirror:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: oras-project/setup-oras@v1
