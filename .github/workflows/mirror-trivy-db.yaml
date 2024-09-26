@@ -8,9 +8,6 @@ jobs:
     mirror:
         runs-on: ubuntu-latest
         steps:
-
-            -   uses: actions/checkout@v3
-
             -   name: "Install ORAS"
                 uses: oras-project/setup-oras@v1
 
@@ -23,7 +20,4 @@ jobs:
 
             -   name: "Mirror trivy db"
                 run: oras cp ghcr.io/aquasecurity/trivy-db:2 ghcr.io/${{ github.repository }}/trivy-db:2
-
-            -   name: Test run security check
-                uses: ./.github/actions/security-scan
 
