@@ -1,14 +1,14 @@
 name: Security Scan
-description: "Run Go vulernability scan and Trivy repo scan"
+description: Run Go vulernability scan and Trivy repo scan
 
 inputs:
   upload_results:
-    description: 'Whether to upload scan results to GitHub Security tab'
+    description: Whether to upload scan results to GitHub Security tab
     required: false
     default: 'false'
 
   upload_artifact:
-    description: 'Whether to upload scan results as an artifact'
+    description: Whether to upload scan results as an artifact
     required: false
     default: 'false'
 
@@ -36,7 +36,6 @@ runs:
       if: ${{ inputs.upload_results == 'true' }}
       with:
         sarif_file: 'trivy-results.sarif'
-
 
     - name: Upload scan results as artifact
       uses: actions/upload-artifact@v3
