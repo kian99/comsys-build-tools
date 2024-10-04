@@ -1,5 +1,9 @@
 name: Security Scan
-description: "Run Go vulernability scan and Trivy repo scan"
+description: |
+  Run Go vulernability scan and Trivy repo scan
+
+  This is designed to be run in CI and provides exit codes when vulnerabilities
+  are found. 
 
 runs:
   using: "composite"
