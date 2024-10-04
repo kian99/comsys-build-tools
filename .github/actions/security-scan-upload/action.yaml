@@ -35,11 +35,6 @@ runs:
           echo "  upload-sarif-artifact: ${{ inputs.upload-sarif-artifact }}"
           exit 1
         fi
-
-    - name: Setup Go
-      uses: actions/setup-go@v5
-      with:
-        go-version-file: go.mod
     
     #########
     # Trivy #
@@ -75,6 +70,8 @@ runs:
       with:
         output-format: 'sarif'
         output-file: 'govuln-results.sarif'
+        go-version-file: go.mod
+        repo-checkout: false
 
     - name: Upload govuln scan results as artifact
       uses: actions/upload-artifact@v3
