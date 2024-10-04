@@ -49,7 +49,7 @@ runs:
         TRIVY_DB_REPOSITORY: ghcr.io/canonical/comsys-build-tools/trivy-db:2
 
     - name: Upload trivy scan results as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: ${{ inputs.upload-sarif-artifact == 'true' }}
       with:
         name: 'trivy-security-scan-results'
@@ -74,7 +74,7 @@ runs:
         repo-checkout: false
 
     - name: Upload govuln scan results as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: ${{ inputs.upload-sarif-artifact == 'true' }}
       with:
         name: 'govuln-security-scan-results'
