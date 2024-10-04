@@ -1,0 +1,93 @@
+name: Security Scan Upload
+description: |
+  Run Go vulernability scan and Trivy (CRITICAL and HIGH) repo scan.
+
+  This is designed to be run on a schedule (ideally weekly) on release/main branches and can 
+  upload to:
+    - Github Security Code Scanning
+    - Artifacts to the workflow (for manual SARIF retrieval)  
+
+  To determine if the action will upload to Github Security and/or artifact, 
+  there are two inputs.
+  - upload-github-security: which defaults to true
+  - upload-sarif-artifact: which defaults to true
+
+inputs:
+  upload-github-security:
+    description: 'Upload the SARIF outputs via github/codeql-action/upload-sarif'
+    required: false
+    default: 'true'
+  upload-sarif-artifact:
+    description: 'Upload the SARIF outputs via actions/upload-artifact'
+    required: false
+    default: 'true'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Input validation
+      shell: bash
+      run: |
+        if [[ "${{ inputs.upload-github-security }}" != "true" && "${{ inputs.upload-sarif-artifact }}" != "true" ]]; then
+          echo "Error: At least one of 'upload-github-security' or 'upload-sarif-artifact' must be set to 'true'."
+          echo "Current values:"
+          echo "  upload-github-security: ${{ inputs.upload-github-security }}"
+          echo "  upload-sarif-artifact: ${{ inputs.upload-sarif-artifact }}"
+          exit 1
+        fi
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: go.mod
+    
+    #########
+    # Trivy #
+    #########
+    - name: Run Trivy vulnerability scanner in repo mode
+      uses: aquasecurity/trivy-action@0.23.0
+      with:
+        scan-type: 'fs'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+      env:
+        TRIVY_DB_REPOSITORY: ghcr.io/canonical/comsys-build-tools/trivy-db:2
+
+    - name: Upload trivy scan results as artifact
+      uses: actions/upload-artifact@v3
+      if: ${{ inputs.upload-sarif-artifact == 'true' }}
+      with:
+        name: 'trivy-security-scan-results'
+        path: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      if: ${{ inputs.upload-github-security == 'true' }}
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+    ##########
+    # Govuln #
+    ##########
+    - name: Go Vulnerability Check
+      id: govulncheck
+      uses: golang/govulncheck-action@v1
+      with:
+        output-format: 'sarif'
+        output-file: 'govuln-results.sarif'
+
+    - name: Upload govuln scan results as artifact
+      uses: actions/upload-artifact@v3
+      if: ${{ inputs.upload-sarif-artifact == 'true' }}
+      with:
+        name: 'govuln-security-scan-results'
+        path: 'govuln-results.sarif'
+
+    - name: Upload govuln scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      if: ${{ inputs.upload-github-security == 'true' }}
+      with:
+        sarif_file: 'govuln-results.sarif'
