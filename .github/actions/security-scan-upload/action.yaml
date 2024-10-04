@@ -36,9 +36,6 @@ runs:
           exit 1
         fi
 
-    - name: Checkout
-      uses: actions/checkout@v4
-
     - name: Setup Go
       uses: actions/setup-go@v5
       with:
