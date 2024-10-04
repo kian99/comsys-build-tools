@@ -2,8 +2,8 @@ name: Security Scan
 description: |
   Run Go vulernability scan and Trivy (CRITICAL and HIGH) repo scan for 
 
-  This is designed to be run in CI and provides exit codes when vulnerabilities
-  are found. 
+  This is designed to be run in CI on pull requests and/or pushes and provides exit codes 
+  when vulnerabilities are found. 
 
 runs:
   using: "composite"
