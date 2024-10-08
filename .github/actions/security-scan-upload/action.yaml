@@ -21,6 +21,13 @@ inputs:
     description: 'Upload the SARIF outputs via actions/upload-artifact'
     required: false
     default: 'true'
+  result-suffix:
+    description: |
+      A suffix for the resulting upload-artifact.
+      For example, v3-branch would result in:
+        trivy-security-scan-results-v3-branch
+    required: false
+    default: ''
 
 runs:
   using: "composite"
@@ -52,7 +59,7 @@ runs:
       uses: actions/upload-artifact@v4
       if: ${{ inputs.upload-sarif-artifact == 'true' }}
       with:
-        name: 'trivy-security-scan-results'
+        name: trivy-security-scan-results${{ inputs.result-suffix != '' && format('-{0}', inputs.result-suffix) || '' }}
         path: 'trivy-results.sarif'
 
     - name: Upload Trivy scan results to GitHub Security tab
@@ -77,7 +84,7 @@ runs:
       uses: actions/upload-artifact@v4
       if: ${{ inputs.upload-sarif-artifact == 'true' }}
       with:
-        name: 'govuln-security-scan-results'
+        name: govuln-security-scan-results${{ inputs.result-suffix != '' && format('-{0}', inputs.result-suffix) || '' }}
         path: 'govuln-results.sarif'
 
     - name: Upload govuln scan results to GitHub Security tab
