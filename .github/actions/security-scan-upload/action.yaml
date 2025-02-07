@@ -1,6 +1,7 @@
 name: Security Scan Upload
 description: |
   Run Go vulernability scan and Trivy (CRITICAL and HIGH) repo scan.
+  Additionally, can run a Trivy scan on a container.
 
   This is designed to be run on a schedule (ideally weekly) on release/main branches and can 
   upload to:
@@ -26,6 +27,11 @@ inputs:
       A suffix for the resulting upload-artifact.
       For example, v3-branch would result in:
         trivy-security-scan-results-v3-branch
+    required: false
+    default: ''
+  container-name:
+    description: |
+      A container tag to scan.
     required: false
     default: ''
 
@@ -67,6 +73,28 @@ runs:
       if: ${{ inputs.upload-github-security == 'true' }}
       with:
         sarif_file: 'trivy-results.sarif'
+
+    # Trivy container scan
+    - name: Run Trivy container scanner
+      uses: aquasecurity/trivy-action@0.28.0
+      if: ${{ inputs.container-name != '' }}
+      with:
+        image-ref: ${{ inputs.container-name }}
+        format: 'sarif'
+        output: 'container-trivy-results.sarif'
+
+    - name: Upload container scan results as artifact
+      uses: actions/upload-artifact@v4
+      if: ${{ inputs.upload-sarif-artifact == 'true' && inputs.container-name != '' }}
+      with:
+        name: trivy-security-scan-results${{ inputs.result-suffix != '' && format('-{0}', inputs.result-suffix) || '' }}
+        path: 'container-trivy-results.sarif'
+
+    - name: Upload container Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      if: ${{ inputs.upload-github-security == 'true' && inputs.container-name != '' }}
+      with:
+        sarif_file: 'container-trivy-results.sarif'
 
     ##########
     # Govuln #
